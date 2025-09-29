@@ -1,4 +1,4 @@
-foreach (EXAMPLE dataset describe umap)
+foreach (EXAMPLE dataset describe umap softmax)
 
 add_executable(${EXAMPLE} ${EXAMPLE}.cpp)
 

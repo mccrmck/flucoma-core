@@ -7,3 +7,5 @@ FluidVersion.cpp
 flucoma.version.rc
 .vscode
 examples/build
+.clangd
+compile_commands.json
