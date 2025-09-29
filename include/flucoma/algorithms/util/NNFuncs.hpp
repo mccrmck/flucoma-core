@@ -22,7 +22,7 @@ class NNActivations
 {
 
 public:
-  enum class Activation { kLinear, kSigmoid, kReLU, kTanh };
+  enum class Activation { kLinear, kSigmoid, kReLU, kTanh, kSoftmax };
 
   using ArrayXXd = Eigen::ArrayXXd;
   using ActivationsMap =
@@ -48,7 +48,11 @@ public:
          [](Eigen::Ref<Eigen::ArrayXXd> in, Eigen::Ref<Eigen::ArrayXXd> out) {
            out = (in.exp() - (-in).exp()) / (in.exp() + (-in).exp());
          }},
-    };
+        {Activation::kSoftmax,
+         [](Eigen::Ref<Eigen::ArrayXXd> in, Eigen::Ref<Eigen::ArrayXXd> out) {
+           // safe softmax
+           out = (in - in.maxCoeff()).exp() / (in - in.maxCoeff()).exp().sum();
+         }}};
     return _funcs;
   }
 
@@ -71,6 +75,10 @@ public:
         {Activation::kTanh,
          [](Eigen::Ref<Eigen::ArrayXXd> in, Eigen::Ref<Eigen::ArrayXXd> out) {
            out = 1 - in.square();
+         }},
+        {Activation::kSoftmax,
+         [](Eigen::Ref<Eigen::ArrayXXd> in, Eigen::Ref<Eigen::ArrayXXd> out) {
+           // Jacobian something something
          }}};
     return _funcs;
   }
